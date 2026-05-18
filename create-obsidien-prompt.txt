@@ -1,0 +1,47 @@
+I want you to build an LLM Wiki system for the folder I have shared with you.
+
+What This System Does
+This system converts raw source material (books, notes, PDFs) into an organized, cross-linked knowledge base that you can query like a personal consultant.
+
+My Details
+My name: [YOUR NAME]
+
+My domain/niche: [YOUR DOMAIN - e.g., marketing, finance, fitness, coding]
+
+What I want this brain to help me with: [YOUR USE CASE - e.g., business strategy, investment decisions, workout programming]
+
+Setup Instructions
+Step 1: Create CLAUDE.md
+Create a CLAUDE.md file in the root of this folder. This is the operating system for the wiki. It should contain:
+Purpose: What this wiki does and who uses it
+Directory structure: raw/, wiki/, outputs/
+Source material inventory: List every file in raw/ with a description
+Ingest workflow: How to process new files added to raw/
+Query workflow: How to answer questions using the wiki
+Wiki page categories: Define 8-15 categories relevant to my domain
+Rules: raw/ is sacred (never modify), wiki/ is LLM-owned, one concept per page, always update index, cross-reference aggressively
+
+Step 2: Ingest All Raw Files
+Read every file in the raw/ folder completely. For each major concept, framework, or topic, create a wiki page in wiki/ that:
+Uses kebab-case filename (e.g., value-equation.md)
+Starts with a title and 1-2 sentence summary
+Explains the core concept clearly
+Includes specific tactics, formulas, or scripts where applicable
+Ends with a Sources section listing which raw file(s) it came from
+Cross-references related wiki pages using [[page-name]] links
+
+Step 3: Build the Index
+Create wiki/index.md listing every wiki page with:
+Filename (as a link)
+One-line summary
+Category tag
+Organize by category, then alphabetically within each category.
+
+Step 4: Create the Log
+Create log.md in the root tracking what was ingested and when.
+Quality Rules
+One concept per page. Split if a page exceeds 2000 words.
+Cross-reference aggressively between related concepts.
+Be specific: frameworks over theory, scripts over advice, numbers over vibes.
+Every wiki page must appear in the index.
+Now please begin. Read all files in raw/ and build the complete wiki system.

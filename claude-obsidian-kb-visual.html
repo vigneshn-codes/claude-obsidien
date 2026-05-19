@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0e0e14;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
+  .canvas{width:960px;background:#0e0e14;}
+  .header{text-align:center;margin-bottom:28px;}
+  .header h1{font-size:20px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#38bdf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.3px;margin-bottom:4px;}
+  .header p{font-size:11px;color:#6b7280;}
+  .split{display:grid;grid-template-columns:1fr 160px 1fr;gap:0;align-items:stretch;margin-bottom:24px;}
+  .panel{border-radius:16px;padding:20px 18px;position:relative;}
+  .panel-left{background:linear-gradient(160deg,#1a1030,#110d22);border:1px solid #7c3aed40;border-right:none;border-radius:16px 0 0 16px;}
+  .panel-right{background:linear-gradient(200deg,#0d1f2d,#0a1929);border:1px solid #0ea5e940;border-left:none;border-radius:0 16px 16px 0;}
+  .panel-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;}
+  .panel-left .panel-label{color:#a78bfa;}.panel-right .panel-label{color:#38bdf8;}
+  .panel-title{font-size:17px;font-weight:800;margin-bottom:4px;}
+  .panel-left .panel-title{color:#c4b5fd;}.panel-right .panel-title{color:#7dd3fc;}
+  .panel-sub{font-size:10px;color:#6b7280;margin-bottom:14px;line-height:1.4;}
+  .file-tree{background:#ffffff08;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:10px;font-family:'SF Mono',monospace;color:#9ca3af;line-height:1.9;}
+  .file-tree .folder{color:#a78bfa;font-weight:600;}.file-tree .file{color:#d1d5db;padding-left:14px;}
+  .file-tree .sacred{color:#f59e0b;padding-left:14px;}.file-tree .wiki{color:#34d399;padding-left:14px;}
+  .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+  .tag{font-size:8.5px;font-weight:600;padding:3px 8px;border-radius:20px;}
+  .tag-pur{background:#7c3aed22;color:#a78bfa;border:1px solid #7c3aed44;}
+  .tag-grn{background:#065f4622;color:#34d399;border:1px solid #06b48044;}
+  .tag-yel{background:#92400e22;color:#fbbf24;border:1px solid #d9770644;}
+  .caps{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
+  .cap{display:flex;align-items:center;gap:9px;background:#ffffff08;border-radius:8px;padding:7px 10px;}
+  .cap-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .cap-text{font-size:10px;color:#cbd5e1;line-height:1.3;}
+  .cap-text strong{color:#e2e8f0;display:block;font-size:10px;}
+  .demo{background:#0f1f35;border:1px solid #1e3a5f;border-radius:8px;padding:9px 11px;margin-top:8px;}
+  .demo-q{font-size:9px;color:#60a5fa;margin-bottom:5px;}
+  .demo-q span{color:#93c5fd;font-style:italic;}
+  .demo-a{font-size:9px;color:#86efac;line-height:1.45;}
+  .divider{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:0 6px;}
+  .div-line{width:2px;position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);background:linear-gradient(to bottom,transparent 0%,#7c3aed 20%,#a78bfa 35%,#ffffff 50%,#38bdf8 65%,#0ea5e9 80%,transparent 100%);}
+  .div-badge{background:#1a1a2e;border:2px solid #ffffff18;border-radius:12px;padding:12px 8px;text-align:center;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;width:150px;}
+  .div-title{font-size:11px;font-weight:800;color:#f1f5f9;text-align:center;line-height:1.3;}
+  .div-sub{font-size:8px;color:#6b7280;text-align:center;line-height:1.4;}
+  .div-pill{font-size:7.5px;font-weight:700;padding:2px 8px;border-radius:10px;background:#ffffff10;color:#94a3b8;letter-spacing:.4px;text-transform:uppercase;}
+  .flow-row{display:flex;align-items:center;gap:6px;margin-top:12px;}
+  .flow-node{flex:1;font-size:8.5px;font-weight:600;background:#ffffff0a;border-radius:6px;padding:4px 7px;color:#94a3b8;text-align:center;border:1px solid #ffffff0f;}
+  .flow-arr{font-size:10px;color:#4b5563;flex-shrink:0;}
+  .comparison{margin-top:4px;}
+  .comp-title{text-align:center;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+  .comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .comp-card{border-radius:14px;overflow:hidden;border:1px solid #ffffff10;}
+  .comp-hdr{padding:12px 14px 10px;display:flex;align-items:center;gap:9px;}
+  .comp-icon{font-size:22px;line-height:1;flex-shrink:0;}
+  .comp-hdr-text h3{font-size:13px;font-weight:800;}
+  .comp-hdr-text p{font-size:9px;opacity:.7;margin-top:1px;}
+  .comp-body{padding:0 14px 14px;}
+  .comp-row{display:flex;align-items:flex-start;gap:8px;margin-top:8px;font-size:9.5px;line-height:1.4;}
+  .comp-row .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+  .comp-row .txt{color:#d1d5db;}
+  .comp-row .txt em{font-style:normal;font-weight:600;}
+  .c1 .comp-hdr{background:linear-gradient(135deg,#1a1030,#251545);}
+  .c1 .comp-hdr-text h3{color:#c4b5fd;}.c1 .comp-hdr-text p{color:#a78bfa;}.c1{background:#13101e;}.c1 .dot-c{background:#a78bfa;}
+  .c2 .comp-hdr{background:linear-gradient(135deg,#0d1f2d,#0a2a40);}
+  .c2 .comp-hdr-text h3{color:#7dd3fc;}.c2 .comp-hdr-text p{color:#38bdf8;}.c2{background:#0d1925;}.c2 .dot-c{background:#38bdf8;}
+  .c3 .comp-hdr{background:linear-gradient(135deg,#0f1f12,#0e2a14);}
+  .c3 .comp-hdr-text h3{color:#86efac;}.c3 .comp-hdr-text p{color:#34d399;}.c3{background:#0d1a10;}.c3 .dot-c{background:#34d399;}
+  .vs-row{display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:12px;}
+  .vs-badge{font-size:8px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:2px 10px;border-radius:20px;}
+  .vs-sep{font-size:10px;color:#374151;font-weight:700;}
+  .footer{text-align:center;margin-top:18px;font-size:8.5px;color:#374151;letter-spacing:.3px;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .pulse-dot{animation:pulse 2s ease infinite;}
+  @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+  .live{background:linear-gradient(90deg,#a78bfa,#38bdf8,#34d399,#a78bfa);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;}
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="header">
+    <h1>Claude × Obsidian — Personal Knowledge OS</h1>
+    <p>How a structured Obsidian vault makes Claude a domain expert on Alex Hormozi's $100M frameworks</p>
+  </div>
+  <div class="split">
+    <div class="panel panel-left">
+      <div class="panel-label">⬡ Obsidian Vault</div>
+      <div class="panel-title">Knowledge Source</div>
+      <div class="panel-sub">Structured markdown vault — raw books, synthesized wiki pages, and an LLM operating system in CLAUDE.md</div>
+      <div class="file-tree">
+        <div class="folder">📁 claude-obsidien/</div>
+        <div class="file sacred">📄 CLAUDE.md &nbsp;<span style="color:#f59e0b;font-size:8px">← LLM OS</span></div>
+        <div class="file" style="color:#6b7280">📄 log.md</div>
+        <div class="folder">&nbsp; 📂 raw/ &nbsp;<span style="color:#ef4444;font-size:8px">SACRED</span></div>
+        <div class="file sacred">&nbsp;&nbsp; 01-100m-offers.md</div>
+        <div class="file sacred">&nbsp;&nbsp; 04-gym-launch-secrets.md</div>
+        <div class="file sacred">&nbsp;&nbsp; 07-concept-value-equation.md</div>
+        <div class="file" style="color:#6b7280">&nbsp;&nbsp; … 22 more files</div>
+        <div class="folder">&nbsp; 📂 wiki/ &nbsp;<span style="color:#34d399;font-size:8px">LLM-owned</span></div>
+        <div class="file wiki">&nbsp;&nbsp; index.md</div>
+        <div class="file wiki">&nbsp;&nbsp; value-equation.md</div>
+        <div class="file wiki">&nbsp;&nbsp; grand-slam-offer.md</div>
+        <div class="file" style="color:#6b7280">&nbsp;&nbsp; … synthesized pages</div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-pur">Markdown</span>
+        <span class="tag tag-pur">Local Files</span>
+        <span class="tag tag-grn">Cross-linked</span>
+        <span class="tag tag-grn">Version-controlled</span>
+        <span class="tag tag-yel">No GPU needed</span>
+        <span class="tag tag-yel">Instant updates</span>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node">📥 Ingest raw/</div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">🔗 Synthesize wiki/</div>
+        <div class="flow-arr">→</div>
+        <div class="flow-node">📑 Index</div>
+      </div>
+    </div>
+    <div class="divider">
+      <div class="div-line"></div>
+      <div class="div-badge">
+        <div class="div-pill">Knowledge Base</div>
+        <div style="font-size:26px">🧠</div>
+        <div class="div-title">Structured<br>Context Layer</div>
+        <div class="div-sub">CLAUDE.md acts as an LLM operating system — instructions, index, and query workflow in one file</div>
+        <div style="width:100%;height:1px;background:#ffffff12;"></div>
+        <div style="font-size:8px;color:#4b5563;text-align:center;"><span style="color:#a78bfa">Obsidian</span> writes<br><span style="color:#38bdf8">Claude</span> reads + synthesizes</div>
+        <div class="div-pill live">Always in sync</div>
+      </div>
+    </div>
+    <div class="panel panel-right">
+      <div class="panel-label">◆ Claude AI</div>
+      <div class="panel-title">Domain Consultant</div>
+      <div class="panel-sub">Reads the full vault at query time — synthesizes answers with specific frameworks, formulas, and fitness-software examples</div>
+      <div class="caps">
+        <div class="cap"><div class="cap-dot pulse-dot" style="background:#a78bfa"></div><div class="cap-text"><strong>Offer Design Advisor</strong>"Price this workout app feature using Value Equation + Trim &amp; Stack"</div></div>
+        <div class="cap"><div class="cap-dot pulse-dot" style="background:#38bdf8;animation-delay:.4s"></div><div class="cap-text"><strong>Lead Gen Strategist</strong>"First 100 users for a fitness SaaS → Core Four + Lead Magnet"</div></div>
+        <div class="cap"><div class="cap-dot pulse-dot" style="background:#34d399;animation-delay:.8s"></div><div class="cap-text"><strong>Unit Economics Checker</strong>"Is my CAC payback broken? → Four Constraints diagnostic"</div></div>
+        <div class="cap"><div class="cap-dot pulse-dot" style="background:#fbbf24;animation-delay:1.2s"></div><div class="cap-text"><strong>Wiki Maintainer</strong>Ingests new raw/ files → creates wiki/ pages → updates index</div></div>
+      </div>
+      <div class="demo">
+        <div class="demo-q">User → <span>"Should I offer a free tier for my workout app?"</span></div>
+        <div class="demo-a">Claude loads: lead-magnet.md, cac-payback.md, four-constraints.md → "Free tier works IF payback &lt;30 days via upsell. Use Lead Magnet: free 7-day plan → email → paid app."</div>
+      </div>
+    </div>
+  </div>
+  <div class="comparison">
+    <div class="comp-title">— Knowledge Strategy Comparison —</div>
+    <div class="vs-row">
+      <span class="vs-badge" style="background:#7c3aed22;color:#a78bfa;border:1px solid #7c3aed33">Obsidian KB</span>
+      <span class="vs-sep">vs</span>
+      <span class="vs-badge" style="background:#0ea5e922;color:#38bdf8;border:1px solid #0ea5e933">RAG</span>
+      <span class="vs-sep">vs</span>
+      <span class="vs-badge" style="background:#05966922;color:#34d399;border:1px solid #05966933">Fine-tuning</span>
+    </div>
+    <div class="comp-grid">
+      <div class="comp-card c1">
+        <div class="comp-hdr"><div class="comp-icon">⬡</div><div class="comp-hdr-text"><h3>Obsidian KB</h3><p>This project's approach</p></div></div>
+        <div class="comp-body">
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>How it works:</em> Markdown vault + CLAUDE.md OS. Claude reads full context at query time via structured wiki pages.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Setup cost:</em> Low — write markdown files, define CLAUDE.md rules. No infra.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Update speed:</em> Instant — edit a .md file, Claude knows it next query.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Knowledge depth:</em> Full — entire vault fits in context; no retrieval gaps.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Best for:</em> Personal/team knowledge bases, books, niche domains.</div></div>
+          <div class="comp-row"><div class="dot" style="background:#ef4444"></div><div class="txt" style="color:#9ca3af"><em>Limitation:</em> Scales to context window (~200K tokens); huge corpora need chunking.</div></div>
+        </div>
+      </div>
+      <div class="comp-card c2">
+        <div class="comp-hdr"><div class="comp-icon">🔍</div><div class="comp-hdr-text"><h3>RAG</h3><p>Retrieval-Augmented Generation</p></div></div>
+        <div class="comp-body">
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>How it works:</em> Embeds docs into a vector DB. At query time, retrieves top-K similar chunks and injects into Claude's context.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Setup cost:</em> Medium — needs embedding pipeline, vector DB (Pinecone, pgvector), chunking logic.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Update speed:</em> Fast — re-embed and upsert changed docs. No retraining needed.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Knowledge depth:</em> Partial — only retrieved chunks visible; cross-concept reasoning may miss connections.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Best for:</em> Large doc corpora (10K+ pages), production search, customer support bots.</div></div>
+          <div class="comp-row"><div class="dot" style="background:#ef4444"></div><div class="txt" style="color:#9ca3af"><em>Limitation:</em> Retrieval can miss relevant chunks; hallucination risk if top-K is wrong.</div></div>
+        </div>
+      </div>
+      <div class="comp-card c3">
+        <div class="comp-hdr"><div class="comp-icon">⚙️</div><div class="comp-hdr-text"><h3>Fine-tuning</h3><p>Model Weight Adaptation</p></div></div>
+        <div class="comp-body">
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>How it works:</em> Continues training base model on your data. Knowledge baked into weights — no runtime injection needed.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Setup cost:</em> High — needs labeled data, GPU time, eval pipelines, and hosting a custom model.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Update speed:</em> Slow — any knowledge update requires a new training run (hours to days).</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Knowledge depth:</em> Behavioral — best for tone, style, format, task patterns. Not reliable for factual recall.</div></div>
+          <div class="comp-row"><div class="dot dot-c"></div><div class="txt"><em>Best for:</em> Consistent output style, domain-specific reasoning patterns, specialized task formats.</div></div>
+          <div class="comp-row"><div class="dot" style="background:#ef4444"></div><div class="txt" style="color:#9ca3af"><em>Limitation:</em> Can't easily update facts; risks catastrophic forgetting; expensive to iterate.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">claude-obsidien · Alex Hormozi $100M Trilogy · Workout Software Playbook · Obsidian + Claude Agent SDK</div>
+</div>
+</body>
+</html>

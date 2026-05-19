@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1220"/>
+<title>Hormozi Framework OS — Workout Software Playbook</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:#ffffff;
+    min-width:1220px;
+    padding:24px 20px 32px;
+  }
+
+  /* ─── PAGE HEADER ─── */
+  .page-title{
+    text-align:center;
+    margin-bottom:6px;
+  }
+  .page-title h1{
+    font-size:22px;font-weight:800;color:#1a1a2e;
+    letter-spacing:-.4px;
+  }
+  .page-title p{
+    font-size:12px;color:#666;margin-top:3px;
+  }
+  .page-title .tags{
+    display:flex;gap:6px;justify-content:center;margin-top:6px;
+    flex-wrap:wrap;
+  }
+  .page-title .tags span{
+    font-size:9px;font-weight:700;
+    background:#f0f0f8;color:#5c35c9;
+    border-radius:20px;padding:2px 9px;
+    text-transform:uppercase;letter-spacing:.4px;
+  }
+
+  /* ─── ROW WRAPPER ─── */
+  .section{
+    margin-bottom:14px;
+  }
+  .section-label{
+    font-size:9px;font-weight:700;color:#bbb;
+    text-transform:uppercase;letter-spacing:1.2px;
+    margin-bottom:5px;
+    padding-left:2px;
+  }
+  .row{
+    display:grid;
+    gap:12px;
+    align-items:stretch;
+  }
+  .row-3{grid-template-columns:repeat(3,1fr)}
+  .row-4{grid-template-columns:repeat(4,1fr)}
+  .row-5{grid-template-columns:repeat(5,1fr)}
+
+  .section-divider{
+    border:none;
+    border-top:1px solid #f0f0f0;
+    margin:10px 0 14px;
+  }
+
+  /* ─── CARD ─── */
+  .card{
+    border-radius:12px;
+    border:1.5px solid #e5e7eb;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+    overflow:hidden;
+    background:#fff;
+    opacity:0;
+    animation:fadeUp .5s ease forwards;
+  }
+  .card-header{
+    display:flex;align-items:center;gap:6px;
+    padding:8px 10px;
+    color:#fff;
+  }
+  .card-header .emoji{font-size:15px;line-height:1;}
+  .card-header .title{font-size:12px;font-weight:700;flex:1;}
+  .card-header .badge{
+    font-size:8px;font-weight:600;
+    background:rgba(255,255,255,.22);
+    border-radius:20px;padding:2px 7px;
+    white-space:nowrap;
+  }
+  .card-body{
+    padding:9px 10px 10px;
+  }
+  .use-case{
+    font-size:10px;color:#888;font-style:italic;
+    margin-bottom:8px;line-height:1.35;
+  }
+
+  /* ─── NODES ─── */
+  .flow{
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap;
+    gap:0;
+  }
+  .node{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border-radius:8px;
+    padding:5px 7px;
+    min-width:58px;
+    text-align:center;
+    flex:1;
+  }
+  .node .n-emoji{font-size:14px;line-height:1;margin-bottom:2px;}
+  .node .n-label{
+    font-size:9px;font-weight:700;
+    line-height:1.2;
+  }
+  .node .n-sub{
+    font-size:7.5px;color:#888;
+    margin-top:1px;line-height:1.2;
+  }
+
+  /* ─── ARROW SVG WRAPPER ─── */
+  .arrow-wrap{
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ─── FORMULA ROW ─── */
+  .formula{
+    display:flex;align-items:center;gap:4px;
+    flex-wrap:wrap;
+    margin-top:6px;
+    font-size:9px;color:#555;
+  }
+  .formula .var{
+    font-weight:700;
+    padding:2px 5px;
+    border-radius:5px;
+  }
+  .formula .op{
+    font-size:11px;font-weight:700;color:#999;
+  }
+
+  /* ─── BRANCH DECISION ─── */
+  .branch{
+    display:flex;gap:8px;margin-top:7px;
+  }
+  .branch-item{
+    flex:1;
+    border-radius:8px;
+    padding:5px 7px;
+    font-size:8px;
+  }
+  .branch-item .b-pill{
+    display:inline-block;
+    padding:1px 6px;border-radius:10px;
+    font-size:7.5px;font-weight:700;
+    margin-bottom:3px;
+  }
+  .branch-item .b-text{
+    font-size:8px;line-height:1.3;color:#444;
+  }
+
+  /* ─── LOOP BOX ─── */
+  .loop-box{
+    border-radius:8px;
+    padding:6px 8px;
+    margin-top:7px;
+  }
+  .loop-box .loop-title{
+    text-align:center;font-size:8px;font-weight:700;
+    margin-bottom:5px;
+  }
+
+  /* ─── VERTICAL FLOW ─── */
+  .vflow{
+    display:flex;flex-direction:column;gap:0;align-items:center;
+  }
+  .vflow .node{width:100%;flex:none;}
+
+  /* ─── COLOR THEMES ─── */
+  /* Green */
+  .c-grn .card-header{background:#0d7a55}
+  .c-grn .node{background:#e8f5ef;color:#0d5c3e}
+  .c-grn .loop-box{border:1.5px dashed #0d7a55;background:#f0faf5}
+  .c-grn .loop-title{color:#0d7a55}
+  .c-grn .formula .var{background:#d4edde;color:#0d5c3e}
+  /* Purple */
+  .c-pur .card-header{background:#5c35c9}
+  .c-pur .node{background:#ede8fb;color:#3b1e8e}
+  .c-pur .loop-box{border:1.5px dashed #5c35c9;background:#f5f2fe}
+  .c-pur .loop-title{color:#5c35c9}
+  .c-pur .formula .var{background:#ddd5f7;color:#3b1e8e}
+  /* Amber */
+  .c-amb .card-header{background:#b06000}
+  .c-amb .node{background:#fef3e2;color:#7a4200}
+  .c-amb .loop-box{border:1.5px dashed #b06000;background:#fdf6e8}
+  .c-amb .loop-title{color:#b06000}
+  .c-amb .formula .var{background:#fde7b8;color:#7a4200}
+  /* Red */
+  .c-red .card-header{background:#c0392b}
+  .c-red .node{background:#fdecea;color:#8b1a10}
+  .c-red .loop-box{border:1.5px dashed #c0392b;background:#fef5f5}
+  .c-red .loop-title{color:#c0392b}
+  .c-red .formula .var{background:#f9c8c5;color:#8b1a10}
+  /* Blue */
+  .c-blu .card-header{background:#1a6db5}
+  .c-blu .node{background:#e4f0fb;color:#0e4580}
+  .c-blu .loop-box{border:1.5px dashed #1a6db5;background:#eef5fd}
+  .c-blu .loop-title{color:#1a6db5}
+  .c-blu .formula .var{background:#c5dcf5;color:#0e4580}
+  /* Teal */
+  .c-tel .card-header{background:#0a7b7b}
+  .c-tel .node{background:#e0f5f5;color:#055555}
+  .c-tel .loop-box{border:1.5px dashed #0a7b7b;background:#edfafa}
+  .c-tel .loop-title{color:#0a7b7b}
+  .c-tel .formula .var{background:#b8e8e8;color:#055555}
+  /* Gray */
+  .c-gry .card-header{background:#555}
+  .c-gry .node{background:#f2f2f2;color:#333}
+
+  /* ─── FADEUP ANIMATION ─── */
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(14px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  /* ─── MARCHING ARROWS ─── */
+  @keyframes march-grn{to{stroke-dashoffset:-18}}
+  @keyframes march-pur{to{stroke-dashoffset:-18}}
+  @keyframes march-amb{to{stroke-dashoffset:-18}}
+  @keyframes march-red{to{stroke-dashoffset:-18}}
+  @keyframes march-blu{to{stroke-dashoffset:-18}}
+  @keyframes march-tel{to{stroke-dashoffset:-18}}
+  @keyframes march-gry{to{stroke-dashoffset:-18}}
+
+  /* ─── PULSE GLOW ─── */
+  @keyframes pulseGlow{
+    0%,100%{box-shadow:0 0 0 0 rgba(92,53,201,.35)}
+    50%{box-shadow:0 0 0 6px rgba(92,53,201,0)}
+  }
+  .pulse{animation:pulseGlow 2s ease infinite}
+
+  /* ─── STAGGER delays ─── */
+  .d1{animation-delay:.05s}
+  .d2{animation-delay:.12s}
+  .d3{animation-delay:.19s}
+  .d4{animation-delay:.26s}
+  .d5{animation-delay:.33s}
+  .d6{animation-delay:.40s}
+  .d7{animation-delay:.47s}
+  .d8{animation-delay:.54s}
+  .d9{animation-delay:.61s}
+  .d10{animation-delay:.68s}
+  .d11{animation-delay:.75s}
+  .d12{animation-delay:.82s}
+
+  /* ─── SUMMARY BAR ─── */
+  .summary-bar{
+    background:linear-gradient(135deg,#1a1a2e,#16213e);
+    border-radius:10px;
+    padding:11px 18px;
+    margin-top:16px;
+    display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  }
+  .summary-bar .s-label{
+    font-size:9px;font-weight:700;color:rgba(255,255,255,.45);
+    text-transform:uppercase;letter-spacing:1px;
+    margin-right:4px;white-space:nowrap;
+  }
+  .s-item{
+    display:flex;align-items:center;gap:5px;
+    font-size:9px;color:rgba(255,255,255,.8);
+    white-space:nowrap;
+  }
+  .s-dot{
+    width:8px;height:8px;border-radius:50%;flex-shrink:0;
+  }
+
+  /* ─── FOOTER ─── */
+  footer{
+    text-align:center;
+    font-size:9px;color:#bbb;
+    margin-top:10px;
+    letter-spacing:.3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ PAGE HEADER ═══════════════════ -->
+<div class="page-title">
+  <h1>💪 Hormozi Framework OS — Workout Software Playbook</h1>
+  <p>Alex Hormozi's $100M Trilogy applied to fitness software &amp; workout products</p>
+  <div class="tags">
+    <span>$100M Offers</span>
+    <span>$100M Leads</span>
+    <span>$100M Money Models</span>
+    <span>Gym Launch Secrets</span>
+    <span>Workout Software</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     ROW 1 — OFFER DESIGN  (3 cards)
+════════════════════════════════════════════════════ -->
+<div class="section" style="margin-top:16px">
+  <div class="section-label">① Offer Design</div>
+  <div class="row row-3">
+
+    <!-- CARD 1 — Value Equation -->
+    <div class="card c-grn d1">
+      <div class="card-header">
+        <span class="emoji">⚖️</span>
+        <span class="title">Value Equation</span>
+        <span class="badge">CORE FORMULA</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Why will users pay premium for your workout app?"</p>
+        <div class="flow">
+          <div class="node c-grn">
+            <span class="n-emoji">🎯</span>
+            <span class="n-label">Dream Outcome</span>
+            <span class="n-sub">transformation</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn .9s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn">
+            <span class="n-emoji">📊</span>
+            <span class="n-label">Likelihood</span>
+            <span class="n-sub">perceived %</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn 1.1s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn">
+            <span class="n-emoji">⏱️</span>
+            <span class="n-label">Time Delay</span>
+            <span class="n-sub">results speed</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn 1.3s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn pulse">
+            <span class="n-emoji">💰</span>
+            <span class="n-label">High Value</span>
+            <span class="n-sub">premium price</span>
+          </div>
+        </div>
+        <div class="formula">
+          <span class="var c-grn">Dream × Likelihood</span>
+          <span class="op">÷</span>
+          <span class="var c-grn">Time × Effort</span>
+          <span class="op">=</span>
+          <span class="var c-grn">💎 Value</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 — Grand Slam Offer -->
+    <div class="card c-pur d2">
+      <div class="card-header">
+        <span class="emoji">🏆</span>
+        <span class="title">Grand Slam Offer</span>
+        <span class="badge">IRRESISTIBLE</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Make your workout app an offer they can't refuse"</p>
+        <div class="flow">
+          <div class="node c-pur">
+            <span class="n-emoji">🔍</span>
+            <span class="n-label">Problem List</span>
+            <span class="n-sub">all objections</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#5c35c9" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-pur 1.0s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#5c35c9"/>
+            </svg>
+          </div>
+          <div class="node c-pur">
+            <span class="n-emoji">🛠️</span>
+            <span class="n-label">Solutions</span>
+            <span class="n-sub">trim &amp; stack</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#5c35c9" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-pur .9s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#5c35c9"/>
+            </svg>
+          </div>
+          <div class="node c-pur">
+            <span class="n-emoji">🎁</span>
+            <span class="n-label">Value Stack</span>
+            <span class="n-sub">bonuses added</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#5c35c9" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-pur 1.2s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#5c35c9"/>
+            </svg>
+          </div>
+          <div class="node c-pur pulse">
+            <span class="n-emoji">🚀</span>
+            <span class="n-label">GSO</span>
+            <span class="n-sub">launch-ready</span>
+          </div>
+        </div>
+        <div class="branch">
+          <div class="branch-item" style="background:#f5f2fe">
+            <span class="b-pill" style="background:#d4c8f8;color:#3b1e8e">✓ Keep</span>
+            <div class="b-text">High value, low cost-to-deliver features</div>
+          </div>
+          <div class="branch-item" style="background:#fff0f0">
+            <span class="b-pill" style="background:#f9c8c5;color:#8b1a10">✗ Cut</span>
+            <div class="b-text">Expensive to deliver, low perceived value</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 — MAGIC Naming -->
+    <div class="card c-amb d3">
+      <div class="card-header">
+        <span class="emoji">✨</span>
+        <span class="title">MAGIC Naming Formula</span>
+        <span class="badge">NAMING</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Name your workout app feature so it sells itself"</p>
+        <div class="flow">
+          <div class="node c-amb">
+            <span class="n-emoji">🧲</span>
+            <span class="n-label">M — Magnet</span>
+            <span class="n-sub">makes them lean in</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22">
+              <line x1="2" y1="11" x2="16" y2="11" stroke="#b06000" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-amb 1.0s linear infinite"/>
+              <polygon points="16,7 22,11 16,15" fill="#b06000"/>
+            </svg>
+          </div>
+          <div class="node c-amb">
+            <span class="n-emoji">🏃</span>
+            <span class="n-label">A — Avatar</span>
+            <span class="n-sub">who it's for</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22">
+              <line x1="2" y1="11" x2="16" y2="11" stroke="#b06000" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-amb 1.1s linear infinite"/>
+              <polygon points="16,7 22,11 16,15" fill="#b06000"/>
+            </svg>
+          </div>
+          <div class="node c-amb">
+            <span class="n-emoji">🎯</span>
+            <span class="n-label">G — Goal</span>
+            <span class="n-sub">the outcome</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22">
+              <line x1="2" y1="11" x2="16" y2="11" stroke="#b06000" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-amb .9s linear infinite"/>
+              <polygon points="16,7 22,11 16,15" fill="#b06000"/>
+            </svg>
+          </div>
+          <div class="node c-amb">
+            <span class="n-emoji">🔢</span>
+            <span class="n-label">I — Interval</span>
+            <span class="n-sub">time frame</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22">
+              <line x1="2" y1="11" x2="16" y2="11" stroke="#b06000" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-amb 1.3s linear infinite"/>
+              <polygon points="16,7 22,11 16,15" fill="#b06000"/>
+            </svg>
+          </div>
+          <div class="node c-amb pulse">
+            <span class="n-emoji">🔥</span>
+            <span class="n-label">C — Container</span>
+            <span class="n-sub">method/vehicle</span>
+          </div>
+        </div>
+        <div class="formula">
+          <span class="var c-amb">e.g. "6-Week Beginner Shred App"</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- ════════════════════════════════════════════════════
+     ROW 2 — LEAD GENERATION  (4 cards)
+════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">② Lead Generation</div>
+  <div class="row row-4">
+
+    <!-- CARD 4 — Core Four -->
+    <div class="card c-red d4">
+      <div class="card-header">
+        <span class="emoji">📡</span>
+        <span class="title">Core Four</span>
+        <span class="badge">LEAD CHANNELS</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"4 ways to get workout app signups"</p>
+        <div class="vflow">
+          <div class="node c-red" style="width:100%;margin-bottom:2px">
+            <span class="n-emoji">🤝</span>
+            <span class="n-label">Warm Outreach — DM existing contacts</span>
+          </div>
+          <svg width="24" height="14" viewBox="0 0 24 14" style="display:block;margin:0 auto">
+            <line x1="12" y1="0" x2="12" y2="10" stroke="#c0392b" stroke-width="2"
+              stroke-dasharray="4 3"
+              style="animation:march-red .9s linear infinite"/>
+            <polygon points="8,8 12,14 16,8" fill="#c0392b"/>
+          </svg>
+          <div class="node c-red" style="width:100%;margin-bottom:2px">
+            <span class="n-emoji">📢</span>
+            <span class="n-label">Cold Outreach — Email/LinkedIn cold</span>
+          </div>
+          <svg width="24" height="14" viewBox="0 0 24 14" style="display:block;margin:0 auto">
+            <line x1="12" y1="0" x2="12" y2="10" stroke="#c0392b" stroke-width="2"
+              stroke-dasharray="4 3"
+              style="animation:march-red 1.1s linear infinite"/>
+            <polygon points="8,8 12,14 16,8" fill="#c0392b"/>
+          </svg>
+          <div class="node c-red" style="width:100%;margin-bottom:2px">
+            <span class="n-emoji">📱</span>
+            <span class="n-label">Content — YouTube/TikTok fitness tips</span>
+          </div>
+          <svg width="24" height="14" viewBox="0 0 24 14" style="display:block;margin:0 auto">
+            <line x1="12" y1="0" x2="12" y2="10" stroke="#c0392b" stroke-width="2"
+              stroke-dasharray="4 3"
+              style="animation:march-red 1.0s linear infinite"/>
+            <polygon points="8,8 12,14 16,8" fill="#c0392b"/>
+          </svg>
+          <div class="node c-red pulse" style="width:100%">
+            <span class="n-emoji">💸</span>
+            <span class="n-label">Paid Ads — Meta/Google workout ads</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 5 — Rule of 100 -->
+    <div class="card c-blu d5">
+      <div class="card-header">
+        <span class="emoji">💯</span>
+        <span class="title">Rule of 100</span>
+        <span class="badge">DAILY COMMITS</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"100 daily actions until you hit $1M"</p>
+        <div class="flow">
+          <div class="node c-blu">
+            <span class="n-emoji">☀️</span>
+            <span class="n-label">Daily Goal</span>
+            <span class="n-sub">set 100 actions</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#1a6db5" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-blu 1.0s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#1a6db5"/>
+            </svg>
+          </div>
+          <div class="node c-blu">
+            <span class="n-emoji">✅</span>
+            <span class="n-label">Execute</span>
+            <span class="n-sub">no days off</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#1a6db5" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-blu 1.3s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#1a6db5"/>
+            </svg>
+          </div>
+          <div class="node c-blu pulse">
+            <span class="n-emoji">📈</span>
+            <span class="n-label">Compound</span>
+            <span class="n-sub">growth kicks in</span>
+          </div>
+        </div>
+        <div class="loop-box c-blu">
+          <div class="loop-title">🔁 Daily Commit Loop</div>
+          <div class="flow" style="gap:4px">
+            <div class="node c-blu" style="flex:none;padding:4px 6px">
+              <span class="n-label">Content: 100 posts</span>
+            </div>
+            <div class="arrow-wrap">
+              <svg width="18" height="16" viewBox="0 0 18 16">
+                <line x1="1" y1="8" x2="13" y2="8" stroke="#1a6db5" stroke-width="1.5"
+                  stroke-dasharray="3 2" style="animation:march-blu .8s linear infinite"/>
+                <polygon points="13,5 18,8 13,11" fill="#1a6db5"/>
+              </svg>
+            </div>
+            <div class="node c-blu" style="flex:none;padding:4px 6px">
+              <span class="n-label">Ads: $100/day</span>
+            </div>
+            <div class="arrow-wrap">
+              <svg width="18" height="16" viewBox="0 0 18 16">
+                <line x1="1" y1="8" x2="13" y2="8" stroke="#1a6db5" stroke-width="1.5"
+                  stroke-dasharray="3 2" style="animation:march-blu 1.0s linear infinite"/>
+                <polygon points="13,5 18,8 13,11" fill="#1a6db5"/>
+              </svg>
+            </div>
+            <div class="node c-blu" style="flex:none;padding:4px 6px">
+              <span class="n-label">DMs: 100/day</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 6 — Lead Magnet -->
+    <div class="card c-grn d6">
+      <div class="card-header">
+        <span class="emoji">🧲</span>
+        <span class="title">Lead Magnet Design</span>
+        <span class="badge">FREE → PAID</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Convert fitness browsers into paying users"</p>
+        <div class="flow">
+          <div class="node c-grn">
+            <span class="n-emoji">🎁</span>
+            <span class="n-label">Free Value</span>
+            <span class="n-sub">PDF/video/tool</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn 1.1s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn">
+            <span class="n-emoji">📧</span>
+            <span class="n-label">Email Capture</span>
+            <span class="n-sub">permission asset</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn .9s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn">
+            <span class="n-emoji">🔥</span>
+            <span class="n-label">Nurture Seq.</span>
+            <span class="n-sub">7-touch follow-up</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn 1.3s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn pulse">
+            <span class="n-emoji">💳</span>
+            <span class="n-label">Purchase</span>
+            <span class="n-sub">paid conversion</span>
+          </div>
+        </div>
+        <div class="formula">
+          <span class="var c-grn">e.g. "Free 7-Day Shred Plan" → App Upsell</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 7 — Lead Getters -->
+    <div class="card c-pur d7">
+      <div class="card-header">
+        <span class="emoji">🤝</span>
+        <span class="title">Lead Getters</span>
+        <span class="badge">SCALING LEADS</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Let others flood your fitness app with leads"</p>
+        <div class="vflow">
+          <div class="node c-pur" style="width:100%;margin-bottom:2px">
+            <span class="n-emoji">👥</span>
+            <span class="n-label">Affiliates — fitness influencers promote</span>
+          </div>
+          <svg width="24" height="14" viewBox="0 0 24 14" style="display:block;margin:0 auto">
+            <line x1="12" y1="0" x2="12" y2="10" stroke="#5c35c9" stroke-width="2"
+              stroke-dasharray="4 3"
+              style="animation:march-pur .9s linear infinite"/>
+            <polygon points="8,8 12,14 16,8" fill="#5c35c9"/>
+          </svg>
+          <div class="node c-pur" style="width:100%;margin-bottom:2px">
+            <span class="n-emoji">🏢</span>
+            <span class="n-label">Partners — gyms bundle your app</span>
+          </div>
+          <svg width="24" height="14" viewBox="0 0 24 14" style="display:block;margin:0 auto">
+            <line x1="12" y1="0" x2="12" y2="10" stroke="#5c35c9" stroke-width="2"
+              stroke-dasharray="4 3"
+              style="animation:march-pur 1.1s linear infinite"/>
+            <polygon points="8,8 12,14 16,8" fill="#5c35c9"/>
+          </svg>
+          <div class="node c-pur pulse" style="width:100%">
+            <span class="n-emoji">🌐</span>
+            <span class="n-label">Referrals — in-app share loops</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- ════════════════════════════════════════════════════
+     ROW 3 — MONEY MODELS  (3 cards)
+════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">③ Money Models</div>
+  <div class="row row-3">
+
+    <!-- CARD 8 — CAC Payback -->
+    <div class="card c-tel d8">
+      <div class="card-header">
+        <span class="emoji">💵</span>
+        <span class="title">CAC Payback &lt; 30 Days</span>
+        <span class="badge">UNIT ECONOMICS</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Recover every customer acquisition dollar in under a month"</p>
+        <div class="flow">
+          <div class="node c-tel">
+            <span class="n-emoji">💸</span>
+            <span class="n-label">Spend $X</span>
+            <span class="n-sub">ad/marketing cost</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0a7b7b" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-tel 1.0s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0a7b7b"/>
+            </svg>
+          </div>
+          <div class="node c-tel">
+            <span class="n-emoji">🏃</span>
+            <span class="n-label">Acquire User</span>
+            <span class="n-sub">CAC = $X</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0a7b7b" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-tel 1.2s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0a7b7b"/>
+            </svg>
+          </div>
+          <div class="node c-tel">
+            <span class="n-emoji">📅</span>
+            <span class="n-label">Day 1–30</span>
+            <span class="n-sub">revenue events</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0a7b7b" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-tel .9s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0a7b7b"/>
+            </svg>
+          </div>
+          <div class="node c-tel pulse">
+            <span class="n-emoji">✅</span>
+            <span class="n-label">Payback!</span>
+            <span class="n-sub">free cash flow</span>
+          </div>
+        </div>
+        <div class="branch">
+          <div class="branch-item" style="background:#edfafa">
+            <span class="b-pill" style="background:#b8e8e8;color:#055555">✓ Front-End</span>
+            <div class="b-text">Upsell, order bump, or month 1 sub covers CAC</div>
+          </div>
+          <div class="branch-item" style="background:#fff0f0">
+            <span class="b-pill" style="background:#f9c8c5;color:#8b1a10">✗ Danger</span>
+            <div class="b-text">Payback &gt;30 days → cash starved, can't reinvest</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 9 — Four Constraints -->
+    <div class="card c-amb d9">
+      <div class="card-header">
+        <span class="emoji">🔧</span>
+        <span class="title">Four Constraints</span>
+        <span class="badge">GROWTH DIAGNOSTIC</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Find exactly which lever is choking your workout app growth"</p>
+        <div class="flow">
+          <div class="node c-amb">
+            <span class="n-emoji">👤</span>
+            <span class="n-label">Leads</span>
+            <span class="n-sub">enough traffic?</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#b06000" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-amb 1.1s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#b06000"/>
+            </svg>
+          </div>
+          <div class="node c-amb">
+            <span class="n-emoji">🔄</span>
+            <span class="n-label">Conversion</span>
+            <span class="n-sub">trial → paid?</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#b06000" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-amb .9s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#b06000"/>
+            </svg>
+          </div>
+          <div class="node c-amb">
+            <span class="n-emoji">💲</span>
+            <span class="n-label">Avg Order</span>
+            <span class="n-sub">price/ARPU up?</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#b06000" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-amb 1.3s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#b06000"/>
+            </svg>
+          </div>
+          <div class="node c-amb pulse">
+            <span class="n-emoji">♻️</span>
+            <span class="n-label">Churn</span>
+            <span class="n-sub">retention rate?</span>
+          </div>
+        </div>
+        <div class="formula">
+          <span class="var c-amb">Leads</span>
+          <span class="op">×</span>
+          <span class="var c-amb">Conv%</span>
+          <span class="op">×</span>
+          <span class="var c-amb">AOV</span>
+          <span class="op">×</span>
+          <span class="var c-amb">(1−Churn)</span>
+          <span class="op">=</span>
+          <span class="var c-amb">Revenue</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 10 — More-Better-New -->
+    <div class="card c-red d10">
+      <div class="card-header">
+        <span class="emoji">📊</span>
+        <span class="title">More · Better · New</span>
+        <span class="badge">GROWTH LEVERS</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"3 knobs to turn when growth stalls"</p>
+        <div class="flow">
+          <div class="node c-red">
+            <span class="n-emoji">⬆️</span>
+            <span class="n-label">More</span>
+            <span class="n-sub">do same, 10× volume</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#c0392b" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-red 1.0s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#c0392b"/>
+            </svg>
+          </div>
+          <div class="node c-red">
+            <span class="n-emoji">⭐</span>
+            <span class="n-label">Better</span>
+            <span class="n-sub">improve conversion</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#c0392b" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-red 1.2s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#c0392b"/>
+            </svg>
+          </div>
+          <div class="node c-red pulse">
+            <span class="n-emoji">🆕</span>
+            <span class="n-label">New</span>
+            <span class="n-sub">new channel/product</span>
+          </div>
+        </div>
+        <div class="loop-box c-red" style="margin-top:8px">
+          <div class="loop-title" style="color:#c0392b">⚠️ Order Matters</div>
+          <div class="flow" style="gap:4px">
+            <div class="node c-red" style="flex:none;padding:4px 6px;font-size:8px">
+              <span class="n-label">1. More first</span>
+            </div>
+            <div class="arrow-wrap">
+              <svg width="18" height="14" viewBox="0 0 18 14">
+                <line x1="1" y1="7" x2="13" y2="7" stroke="#c0392b" stroke-width="1.5"
+                  stroke-dasharray="3 2" style="animation:march-red .8s linear infinite"/>
+                <polygon points="13,4 18,7 13,10" fill="#c0392b"/>
+              </svg>
+            </div>
+            <div class="node c-red" style="flex:none;padding:4px 6px">
+              <span class="n-label">2. Better</span>
+            </div>
+            <div class="arrow-wrap">
+              <svg width="18" height="14" viewBox="0 0 18 14">
+                <line x1="1" y1="7" x2="13" y2="7" stroke="#c0392b" stroke-width="1.5"
+                  stroke-dasharray="3 2" style="animation:march-red 1.0s linear infinite"/>
+                <polygon points="13,4 18,7 13,10" fill="#c0392b"/>
+              </svg>
+            </div>
+            <div class="node c-red" style="flex:none;padding:4px 6px">
+              <span class="n-label">3. New last</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider"/>
+
+<!-- ════════════════════════════════════════════════════
+     ROW 4 — MARKET STRATEGY + FITNESS  (4 cards)
+════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">④ Market Strategy &amp; Fitness Application</div>
+  <div class="row row-4">
+
+    <!-- CARD 11 — Starving Crowd -->
+    <div class="card c-blu d8">
+      <div class="card-header">
+        <span class="emoji">🍔</span>
+        <span class="title">Starving Crowd</span>
+        <span class="badge">MARKET SELECTION</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Pick the niche that's desperate to buy your workout app"</p>
+        <div class="flow">
+          <div class="node c-blu">
+            <span class="n-emoji">😰</span>
+            <span class="n-label">Mass Pain</span>
+            <span class="n-sub">urgent problem</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="26" height="22" viewBox="0 0 26 22">
+              <line x1="2" y1="11" x2="20" y2="11" stroke="#1a6db5" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-blu 1.0s linear infinite"/>
+              <polygon points="20,7 26,11 20,15" fill="#1a6db5"/>
+            </svg>
+          </div>
+          <div class="node c-blu">
+            <span class="n-emoji">💰</span>
+            <span class="n-label">Purchasing Power</span>
+            <span class="n-sub">can afford it</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="26" height="22" viewBox="0 0 26 22">
+              <line x1="2" y1="11" x2="20" y2="11" stroke="#1a6db5" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-blu 1.3s linear infinite"/>
+              <polygon points="20,7 26,11 20,15" fill="#1a6db5"/>
+            </svg>
+          </div>
+          <div class="node c-blu pulse">
+            <span class="n-emoji">🎯</span>
+            <span class="n-label">Reachable</span>
+            <span class="n-sub">targeted ads work</span>
+          </div>
+        </div>
+        <div class="formula">
+          <span class="var c-blu">Niche: "Busy Dads 35-50 wanting fat loss"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 12 — Trim & Stack -->
+    <div class="card c-tel d9">
+      <div class="card-header">
+        <span class="emoji">✂️</span>
+        <span class="title">Trim &amp; Stack</span>
+        <span class="badge">OFFER SURGERY</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Surgically redesign your workout app's feature set"</p>
+        <div class="flow">
+          <div class="node c-tel">
+            <span class="n-emoji">📋</span>
+            <span class="n-label">Feature Audit</span>
+            <span class="n-sub">list all solutions</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0a7b7b" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-tel 1.1s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0a7b7b"/>
+            </svg>
+          </div>
+          <div class="node c-tel">
+            <span class="n-emoji">✂️</span>
+            <span class="n-label">Cut Low ROI</span>
+            <span class="n-sub">high cost, low WTP</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0a7b7b" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-tel .9s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0a7b7b"/>
+            </svg>
+          </div>
+          <div class="node c-tel pulse">
+            <span class="n-emoji">🏗️</span>
+            <span class="n-label">Stack Wins</span>
+            <span class="n-sub">low cost, high WTP</span>
+          </div>
+        </div>
+        <div class="branch">
+          <div class="branch-item" style="background:#edfafa">
+            <span class="b-pill" style="background:#b8e8e8;color:#055555">✓ Stack</span>
+            <div class="b-text">AI coach, progress tracking, community</div>
+          </div>
+          <div class="branch-item" style="background:#fff0f0">
+            <span class="b-pill" style="background:#f9c8c5;color:#8b1a10">✗ Trim</span>
+            <div class="b-text">Custom video production, 1-on-1 coaching</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 13 — Gym Launch / 6-Week Challenge -->
+    <div class="card c-grn d10">
+      <div class="card-header">
+        <span class="emoji">🏋️</span>
+        <span class="title">Gym Launch Model</span>
+        <span class="badge">FITNESS-SPECIFIC</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"The 6-Week Challenge blueprint adapted for workout apps"</p>
+        <div class="flow">
+          <div class="node c-grn">
+            <span class="n-emoji">📣</span>
+            <span class="n-label">Flash Offer</span>
+            <span class="n-sub">limited-time price</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn 1.2s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn">
+            <span class="n-emoji">🗓️</span>
+            <span class="n-label">6-Wk Sprint</span>
+            <span class="n-sub">structured program</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn .9s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn">
+            <span class="n-emoji">🏆</span>
+            <span class="n-label">Result</span>
+            <span class="n-sub">proof + testimonial</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="28" height="22" viewBox="0 0 28 22">
+              <line x1="2" y1="11" x2="22" y2="11" stroke="#0d7a55" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-grn 1.0s linear infinite"/>
+              <polygon points="22,7 28,11 22,15" fill="#0d7a55"/>
+            </svg>
+          </div>
+          <div class="node c-grn pulse">
+            <span class="n-emoji">💎</span>
+            <span class="n-label">Upsell</span>
+            <span class="n-sub">annual subscription</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 14 — Guarantees + Scarcity -->
+    <div class="card c-pur d11">
+      <div class="card-header">
+        <span class="emoji">🛡️</span>
+        <span class="title">Guarantees &amp; Scarcity</span>
+        <span class="badge">CLOSE THE SALE</span>
+      </div>
+      <div class="card-body">
+        <p class="use-case">"Remove risk, create urgency, get the workout app sale"</p>
+        <div class="flow">
+          <div class="node c-pur">
+            <span class="n-emoji">🛡️</span>
+            <span class="n-label">Unconditional</span>
+            <span class="n-sub">full refund 30d</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="26" height="22" viewBox="0 0 26 22">
+              <line x1="2" y1="11" x2="20" y2="11" stroke="#5c35c9" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-pur 1.0s linear infinite"/>
+              <polygon points="20,7 26,11 20,15" fill="#5c35c9"/>
+            </svg>
+          </div>
+          <div class="node c-pur">
+            <span class="n-emoji">⏰</span>
+            <span class="n-label">Scarcity</span>
+            <span class="n-sub">only 50 spots</span>
+          </div>
+          <div class="arrow-wrap">
+            <svg width="26" height="22" viewBox="0 0 26 22">
+              <line x1="2" y1="11" x2="20" y2="11" stroke="#5c35c9" stroke-width="2"
+                stroke-dasharray="5 3"
+                style="animation:march-pur 1.2s linear infinite"/>
+              <polygon points="20,7 26,11 20,15" fill="#5c35c9"/>
+            </svg>
+          </div>
+          <div class="node c-pur pulse">
+            <span class="n-emoji">✅</span>
+            <span class="n-label">Buy Now</span>
+            <span class="n-sub">friction removed</span>
+          </div>
+        </div>
+        <div class="formula">
+          <span class="var c-pur">Result Guarantee: "Lose 10lb or full refund"</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     SUMMARY BAR
+════════════════════════════════════════════════════ -->
+<div class="summary-bar">
+  <span class="s-label">FRAMEWORK MAP</span>
+  <div class="s-item"><div class="s-dot" style="background:#0d7a55"></div>Value Equation: Dream × Likelihood ÷ Time × Effort</div>
+  <div class="s-item"><div class="s-dot" style="background:#5c35c9"></div>Grand Slam Offer: Problem → Solutions → Stack → Launch</div>
+  <div class="s-item"><div class="s-dot" style="background:#b06000"></div>MAGIC Naming: Magnet · Avatar · Goal · Interval · Container</div>
+  <div class="s-item"><div class="s-dot" style="background:#c0392b"></div>Core Four: Warm / Cold / Content / Paid</div>
+  <div class="s-item"><div class="s-dot" style="background:#1a6db5"></div>Rule of 100: 100 daily actions × no days off = compound growth</div>
+  <div class="s-item"><div class="s-dot" style="background:#0d7a55"></div>Lead Magnet: Free Value → Email → Nurture → Purchase</div>
+  <div class="s-item"><div class="s-dot" style="background:#0a7b7b"></div>CAC Payback: Recover cost within 30 days for free cash flow</div>
+  <div class="s-item"><div class="s-dot" style="background:#b06000"></div>Four Constraints: Leads × Conv × AOV × (1−Churn)</div>
+  <div class="s-item"><div class="s-dot" style="background:#c0392b"></div>More·Better·New: Scale → Optimize → Innovate (in order)</div>
+  <div class="s-item"><div class="s-dot" style="background:#0d7a55"></div>Gym Launch: Flash Offer → 6-Week Sprint → Result → Upsell</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════ -->
+<footer>
+  Alex Hormozi · $100M Offers · $100M Leads · $100M Money Models · Gym Launch Secrets · Acquisition.com · Workout Software Playbook · claude-obsidien
+</footer>
+
+</body>
+</html>
